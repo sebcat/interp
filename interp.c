@@ -12,7 +12,7 @@ void eval(unsigned char *pc) {
 	NEXT;
 	PRINT:
 		#define DUMMYSTR "trololo\n"
-		s_write(STDOUT_FILENO, DUMMYSTR, sizeof(DUMMYSTR));
+		s_write(STDOUT_FILENO, DUMMYSTR, sizeof(DUMMYSTR)-1);
 		NEXT;
 	EXIT:
 		s_exit(0);
