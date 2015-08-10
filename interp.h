@@ -8,6 +8,8 @@
 #define OP_STR   "\x03"
 #define OP_DEC   "\x04"
 #define OP_JNZ   "\x05"
+#define OP_DUP   "\x06"
+#define OP_DOT   "\x07"
 
 void eval(const unsigned char *pc);
 

@@ -16,10 +16,14 @@
 void eval(const unsigned char *pc) {
 	// bytecode symbol table, must correspond to OP_* defines in interp.h
 	// Requires https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html
-	static void *syms[] = {&&DONE, &&PRINT, &&LIT, &&STR, &&DEC, &&JNZ};
+	static void *syms[] = {&&DONE, &&PRINT, &&LIT, &&STR, &&DEC, &&JNZ,
+			&&DUP, &&DOT};
 
 	// parameter stack and TOS-pointer
 	unsigned long pstack[PSTACK_SIZE], *tos = pstack;
+
+	// scratch block with pointer
+	char buf[32], *cptr;
 
 	// temporary cells for storing parameters
 	unsigned long p0, p1;
@@ -49,13 +53,39 @@ void eval(const unsigned char *pc) {
 	JNZ:
 		if (PSTACK_PEEK() != 0) {
 			// TOS is *not* consumed when the branch is taken
-			sp0 = *(long *)pc;
-			pc += sp0;
+			pc += *(signed char*)pc;
 		} else {
 			// TOS is consumed when the branch is not taken
 			(void)PSTACK_POP();
-			pc += sizeof(unsigned long);
+			pc += sizeof(signed char);
 		}
+		NEXT;
+	DUP:
+		p0 = PSTACK_POP();
+		PSTACK_PUSH(p0);
+		PSTACK_PUSH(p0);
+		NEXT;
+	DOT:
+		p0 = 0; // sign indicator
+		sp0 = PSTACK_POP();
+		if (sp0 < 0) {
+			p0 = 1;
+			sp0 = -sp0;
+		}
+
+		cptr = buf+sizeof(buf)-1;
+		*cptr-- = '\n';
+		do {
+			*cptr-- = '0' + (sp0 % 10);
+			sp0 /= 10;
+		} while (sp0 != 0);
+
+		if (p0) {
+			*cptr = '-';
+		} else {
+			cptr++;
+		}
+		s_write(STDOUT_FILENO, cptr, (buf+sizeof(buf))-cptr);
 		NEXT;
 	DONE:
 		return;
