@@ -4,6 +4,7 @@
 // 16 byte boundary in our _start function
 
 #include "interp.h"
+#include "syscalls.h"
 
 void _start() {
 	unsigned char program[] = {
@@ -17,5 +18,6 @@ void _start() {
 	};
 
 	eval(program);
+	s_exit(0);
 }
 

@@ -31,7 +31,6 @@ void eval(unsigned char *pc) {
 		s_write(STDOUT_FILENO, (void *)p0, p1);
 		NEXT;
 	DONE:
-		s_exit(0);
-	  __builtin_unreachable();
+		return;
 }
 

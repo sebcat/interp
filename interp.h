@@ -10,7 +10,7 @@
 	OP_LIT, (x)&0xff, ((x)>>8)&0xff, ((x)>>16)&0xff, ((x)>>24)&0xff, \
 			((x)>>32)&0xff, ((x)>>40)&0xff, ((x)>>48)&0xff, ((x)>>56)&0xff
 
-void eval(unsigned char *pc) __attribute__((noreturn));
+void eval(unsigned char *pc);
 
 #endif
 
