@@ -7,15 +7,10 @@
 #include "syscalls.h"
 
 void _start() {
-	unsigned char program[] = {
-		LITERAL((unsigned long)"Hello, "),
-		LITERAL(sizeof("Hello, ")-1),
-		OP_PRINT,
-		LITERAL((unsigned long)"World!\n"),
-		LITERAL(sizeof("World!\n")-1),
-		OP_PRINT,
-		OP_DONE
-	};
+	static const unsigned char *program = (const unsigned char *)
+		OP_STR "\x0eHello, World!\n"
+		OP_PRINT
+		OP_DONE;
 
 	eval(program);
 	s_exit(0);

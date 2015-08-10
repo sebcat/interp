@@ -12,10 +12,10 @@
 // change in the future). Also no opcode validation. Code is assumed
 // to be correct.
 
-void eval(unsigned char *pc) {
+void eval(const unsigned char *pc) {
 	// bytecode symbol table, must correspond to OP_* defines in interp.h
 	// Requires https://gcc.gnu.org/onlinedocs/gcc/Labels-as-Values.html
-	static void *syms[] = {&&DONE, &&PRINT, &&LIT};
+	static void *syms[] = {&&DONE, &&PRINT, &&LIT, &&STR};
 	unsigned long pstack[PSTACK_SIZE], *tos = pstack;
 	unsigned long p0, p1;
 
@@ -24,6 +24,13 @@ void eval(unsigned char *pc) {
 		p0 = *(unsigned long *)pc;
 		pc += sizeof(unsigned long);
 		PSTACK_PUSH(p0);
+		NEXT;
+	STR:
+		p1 = (unsigned long)*pc++;
+		p0 = (unsigned long)pc;
+		pc += p1;
+		PSTACK_PUSH(p0);
+		PSTACK_PUSH(p1);
 		NEXT;
 	PRINT:
 		p1 = PSTACK_POP();
