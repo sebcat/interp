@@ -6,7 +6,16 @@
 #include "interp.h"
 
 void _start() {
-	unsigned char program[] = {OP_PRINT,OP_PRINT,OP_PRINT,OP_PRINT,OP_DONE};
+	unsigned char program[] = {
+		LITERAL((unsigned long)"Hello, "),
+		LITERAL(sizeof("Hello, ")-1),
+		OP_PRINT,
+		LITERAL((unsigned long)"World!\n"),
+		LITERAL(sizeof("World!\n")-1),
+		OP_PRINT,
+		OP_DONE
+	};
+
 	eval(program);
 }
 
